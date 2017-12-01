@@ -3,15 +3,14 @@
     "description": "Performs a regular expression match on iterator elements.",
     "license": "MIT",
     "require": {
-        "php": "^7.1",
-        "ext-pcre": "*"
+        "php": "^7.1"
     },
     "autoload": {
         "psr-4": {
             "Shiyan\\IteratorRegex\\": "src/"
         }
     },
-    "keywords": ["regex", "match", "iterator", "scenario", "php", "pcre", "oop"],
+    "keywords": ["regex", "match", "iterator", "scenario", "php", "oop"],
     "support": {
         "source": "https://github.com/mikeshiyan/iterator-regex",
         "issues": "https://github.com/mikeshiyan/iterator-regex/issues"

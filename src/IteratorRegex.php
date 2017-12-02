@@ -64,7 +64,7 @@ class IteratorRegex {
    */
   public function searchInCurrent(ScenarioInterface $scenario): void {
     foreach ($scenario->getPatterns() as $pattern) {
-      $matches = self::pregMatch($pattern, $scenario->getIterator()->current());
+      $matches = self::pregMatch($pattern, (string) $scenario->getIterator()->current());
 
       if ($matches !== NULL) {
         $scenario->onMatch($matches, $pattern);

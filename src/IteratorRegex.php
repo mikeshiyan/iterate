@@ -22,13 +22,11 @@ class IteratorRegex {
    */
   public function __invoke(ScenarioInterface $scenario): void {
     $scenario->preRun();
-    $scenario->getIterator()->rewind();
 
-    while ($scenario->getIterator()->valid()) {
+    foreach ($scenario->getIterator() as $key => $current) {
       $scenario->preSearch();
       $this->searchInCurrent($scenario);
       $scenario->postSearch();
-      $scenario->getIterator()->next();
     }
 
     $scenario->postRun();

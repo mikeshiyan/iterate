@@ -10,23 +10,6 @@ use Shiyan\IteratorRegex\Scenario\ScenarioInterface;
 class IteratorRegex {
 
   /**
-   * IteratorRegex invoker.
-   *
-   * Simply redirects the call to the invoke() method.
-   *
-   * @param \Shiyan\IteratorRegex\Scenario\ScenarioInterface $scenario
-   *   The scenario to run the search by.
-   *
-   * @throws \Shiyan\IteratorRegex\PregLastError
-   *   If a regex execution error occurred in IteratorRegex::invoke().
-   *
-   * @see \Shiyan\IteratorRegex\IteratorRegex::invoke()
-   */
-  public function __invoke(ScenarioInterface $scenario): void {
-    $this->invoke($scenario);
-  }
-
-  /**
    * Runs the patterns search by the scenario.
    *
    * @param \Shiyan\IteratorRegex\Scenario\ScenarioInterface $scenario
@@ -37,7 +20,7 @@ class IteratorRegex {
    *
    * @see \Shiyan\IteratorRegex\IteratorRegex::searchInCurrent()
    */
-  public function invoke(ScenarioInterface $scenario): void {
+  public function __invoke(ScenarioInterface $scenario): void {
     $scenario->preRun();
     $scenario->getIterator()->rewind();
 

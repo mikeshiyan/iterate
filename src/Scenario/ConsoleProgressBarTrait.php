@@ -80,14 +80,16 @@ trait ConsoleProgressBarTrait {
 
       if ($iterator instanceof \SplFileObject) {
         // Get current byte offset, after the line was read.
-        $step = $iterator->ftell();
+        $this->progress->setProgress($iterator->ftell());
+      }
+      elseif (is_int($key = $iterator->key())) {
+        // Add one to the current index, because we're in the post-search phase.
+        $this->progress->setProgress($key + 1);
       }
       else {
-        // Add one to the current index, because we're in the post-search phase.
-        $step = $iterator->key() + 1;
+        // If iterator's key is not integer, just advance the progress with 1.
+        $this->progress->advance();
       }
-
-      $this->progress->setProgress($step);
     }
   }
 

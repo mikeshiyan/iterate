@@ -1,12 +1,12 @@
 <?php
 
-namespace Shiyan\IteratorRegex\Scenario;
+namespace Shiyan\Iterate\Scenario;
 
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Defines a basic ProgressBar feature for IteratorRegex Scenarios.
+ * Defines a basic ProgressBar feature for Iterate Scenarios.
  */
 trait ConsoleProgressBarTrait {
 
@@ -23,7 +23,7 @@ trait ConsoleProgressBarTrait {
    * @return \Iterator
    *   An instance of object implementing Iterator.
    *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::getIterator()
+   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::getIterator()
    */
   abstract public function getIterator(): \Iterator;
 
@@ -41,7 +41,7 @@ trait ConsoleProgressBarTrait {
    * @throws \RuntimeException
    *   If the symfony/console component is not installed.
    *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::preRun()
+   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::preRun()
    */
   public function preRun(): void {
     if (!class_exists(ProgressBar::class)) {
@@ -72,7 +72,7 @@ trait ConsoleProgressBarTrait {
   /**
    * Updates the current progress in the post-search phase.
    *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::postSearch()
+   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::postSearch()
    */
   public function postSearch(): void {
     if ($this->progress) {
@@ -96,7 +96,7 @@ trait ConsoleProgressBarTrait {
   /**
    * Finishes the progress output in the post-run phase.
    *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::postRun()
+   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::postRun()
    */
   public function postRun(): void {
     if ($this->progress) {

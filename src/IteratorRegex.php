@@ -1,49 +1,44 @@
 <?php
 
-namespace Shiyan\IteratorRegex;
+namespace Shiyan\Iterate;
 
-use Shiyan\IteratorRegex\Scenario\ScenarioInterface;
+use Shiyan\Iterate\Scenario\ScenarioInterface;
+use Shiyan\Iterate\Scenario\RegexScenarioInterface;
 
 /**
  * Performs a regular expression match on iterator elements.
  */
-class IteratorRegex {
+class IteratorRegex extends Iterate {
 
   /**
    * Runs the patterns search by the scenario.
    *
-   * @param \Shiyan\IteratorRegex\Scenario\ScenarioInterface $scenario
+   * @param \Shiyan\Iterate\Scenario\RegexScenarioInterface $scenario
    *   The scenario to run the search by.
    *
-   * @throws \Shiyan\IteratorRegex\PregLastError
-   *   If a regex execution error occurred in IteratorRegex::searchInCurrent().
-   *
-   * @see \Shiyan\IteratorRegex\IteratorRegex::searchInCurrent()
+   * @throws \InvalidArgumentException
+   *   If the given $scenario is not of the proper interface.
    */
   public function __invoke(ScenarioInterface $scenario): void {
-    $scenario->preRun();
-
-    foreach ($scenario->getIterator() as $key => $current) {
-      $scenario->preSearch();
-      $this->searchInCurrent($scenario);
-      $scenario->postSearch();
+    if (!is_a($scenario, RegexScenarioInterface::class)) {
+      throw new \InvalidArgumentException('A $scenario must implement the \Shiyan\Iterate\Scenario\RegexScenarioInterface.');
     }
 
-    $scenario->postRun();
+    parent::__invoke($scenario);
   }
 
   /**
    * Runs the patterns search in the current Iterator's element.
    *
-   * @param \Shiyan\IteratorRegex\Scenario\ScenarioInterface $scenario
+   * @param \Shiyan\Iterate\Scenario\RegexScenarioInterface $scenario
    *   The scenario to run the search by.
    *
-   * @throws \Shiyan\IteratorRegex\PregLastError
+   * @throws \Shiyan\Iterate\PregLastError
    *   If a regex execution error occurred in IteratorRegex::pregMatch().
    *
-   * @see \Shiyan\IteratorRegex\IteratorRegex::pregMatch()
+   * @see \Shiyan\Iterate\IteratorRegex::pregMatch()
    */
-  public function searchInCurrent(ScenarioInterface $scenario): void {
+  protected function searchInCurrent(ScenarioInterface $scenario): void {
     foreach ($scenario->getPatterns() as $pattern) {
       $matches = self::pregMatch($pattern, (string) $scenario->getIterator()->current());
 
@@ -64,10 +59,10 @@ class IteratorRegex {
    * @param string $subject
    *   The input string.
    *
-   * @return array|NULL
+   * @return array|null
    *   The results of search, or NULL if $pattern doesn't match given $subject.
    *
-   * @throws \Shiyan\IteratorRegex\PregLastError
+   * @throws \Shiyan\Iterate\PregLastError
    *   If a regex execution error occurred.
    *
    * @see preg_match()

@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Shiyan\IteratorRegex\Scenario\ConsoleProgressBarTrait;
+use Shiyan\Iterate\Scenario\ConsoleProgressBarTrait;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;

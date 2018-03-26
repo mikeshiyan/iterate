@@ -1,9 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Shiyan\IteratorRegex\IteratorRegex;
-use Shiyan\IteratorRegex\PregLastError;
-use Shiyan\IteratorRegex\Scenario\BaseScenario;
+use Shiyan\Iterate\IteratorRegex;
+use Shiyan\Iterate\PregLastError;
+use Shiyan\Iterate\Scenario\BaseRegexScenario;
 
 class IteratorRegexTest extends TestCase {
 
@@ -11,7 +11,7 @@ class IteratorRegexTest extends TestCase {
     $iterator_regex = new IteratorRegex();
 
     // Empty iterator.
-    $scenario = $this->createMock(BaseScenario::class);
+    $scenario = $this->createMock(BaseRegexScenario::class);
     $scenario->method('getIterator')->willReturn(new ArrayIterator([]));
     $scenario->expects($this->once())->method('preRun');
     $scenario->expects($this->once())->method('postRun');
@@ -23,7 +23,7 @@ class IteratorRegexTest extends TestCase {
     $iterator = new ArrayIterator(['a', 'b', 'c']);
     $iterator->seek(1);
 
-    $scenario = $this->createMock(BaseScenario::class);
+    $scenario = $this->createMock(BaseRegexScenario::class);
     $scenario->method('getIterator')->willReturn($iterator);
     $scenario->expects($this->once())->method('preRun');
     $scenario->expects($this->once())->method('postRun');
@@ -34,14 +34,17 @@ class IteratorRegexTest extends TestCase {
   }
 
   public function testSearchInCurrent() {
-    $iterator_regex = new IteratorRegex();
+    $iterator_regex = $this->getMockForAbstractClass(IteratorRegex::class);
+
+    $search_in_current = (new \ReflectionObject($iterator_regex))->getMethod('searchInCurrent');
+    $search_in_current->setAccessible(TRUE);
 
     // Set current to other than first.
     $iterator = new ArrayIterator(['a', 'b', 'c']);
     $iterator->seek(1);
 
     // The second of 3 patterns must match.
-    $scenario = $this->createMock(BaseScenario::class);
+    $scenario = $this->createMock(BaseRegexScenario::class);
     $scenario->method('getPatterns')->willReturn(['/a/', '/b/', '/c/']);
     $scenario->expects($this->exactly(2))
       ->method('getIterator')->willReturn($iterator);
@@ -49,14 +52,14 @@ class IteratorRegexTest extends TestCase {
       ->method('onMatch')->with(['b'], '/b/');
     $scenario->expects($this->never())->method('ifNotMatched');
 
-    $iterator_regex->searchInCurrent($scenario);
+    $search_in_current->invoke($iterator_regex, $scenario);
 
     // No patterns, ifNotMatched() must be called.
-    $scenario = $this->createMock(BaseScenario::class);
+    $scenario = $this->createMock(BaseRegexScenario::class);
     $scenario->method('getPatterns')->willReturn([]);
     $scenario->expects($this->once())->method('ifNotMatched');
 
-    $iterator_regex->searchInCurrent($scenario);
+    $search_in_current->invoke($iterator_regex, $scenario);
   }
 
   public function testPregMatch() {

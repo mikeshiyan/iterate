@@ -3,7 +3,7 @@
 namespace Shiyan\Iterate\Scenario;
 
 /**
- * Provides interface for IteratorRegex Scenarios.
+ * Provides interface for regex based Iterate Scenarios.
  */
 interface RegexScenarioInterface extends ScenarioInterface {
 

@@ -20,21 +20,11 @@ class Iterate {
 
     foreach ($scenario->getIterator() as $key => $current) {
       $scenario->preSearch();
-      $this->searchInCurrent($scenario);
+      $scenario->onEach();
       $scenario->postSearch();
     }
 
     $scenario->postRun();
-  }
-
-  /**
-   * Runs the search in the current Iterator's element.
-   *
-   * @param \Shiyan\Iterate\Scenario\ScenarioInterface $scenario
-   *   The scenario to iterate by.
-   */
-  protected function searchInCurrent(ScenarioInterface $scenario): void {
-    $scenario->onEach();
   }
 
 }

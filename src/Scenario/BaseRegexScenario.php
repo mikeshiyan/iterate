@@ -2,7 +2,7 @@
 
 namespace Shiyan\Iterate\Scenario;
 
-use Shiyan\Iterate\PregLastError;
+use Shiyan\Iterate\Exception\PregLastError;
 
 /**
  * Defines a regex based Scenario to iterate by.
@@ -42,7 +42,7 @@ abstract class BaseRegexScenario extends BaseScenario implements RegexScenarioIn
    * @return array|null
    *   The results of search, or NULL if $pattern doesn't match given $subject.
    *
-   * @throws \Shiyan\Iterate\PregLastError
+   * @throws \Shiyan\Iterate\Exception\PregLastError
    *   If a regex execution error occurred.
    *
    * @see preg_match()

@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Shiyan\Iterate\PregLastError;
+use Shiyan\Iterate\Exception\PregLastError;
 use Shiyan\Iterate\Scenario\BaseRegexScenario;
 
 class BaseRegexScenarioTest extends TestCase {

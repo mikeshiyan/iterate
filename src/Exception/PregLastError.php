@@ -1,6 +1,6 @@
 <?php
 
-namespace Shiyan\Iterate;
+namespace Shiyan\Iterate\Exception;
 
 /**
  * Exception thrown in case of PCRE regex execution error.

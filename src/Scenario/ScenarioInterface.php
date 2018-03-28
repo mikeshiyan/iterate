@@ -22,16 +22,31 @@ interface ScenarioInterface {
 
   /**
    * Executes code before performing a search in each element.
+   *
+   * @throws \Shiyan\Iterate\Exception\ContinueIteration
+   *   If the rest of the current iteration step needs to be skipped.
+   * @throws \Shiyan\Iterate\Exception\BreakIteration
+   *   If the rest of the whole iteration process needs to be skipped.
    */
   public function preSearch(): void;
 
   /**
    * Executes code for each element.
+   *
+   * @throws \Shiyan\Iterate\Exception\ContinueIteration
+   *   If the rest of the current iteration step needs to be skipped.
+   * @throws \Shiyan\Iterate\Exception\BreakIteration
+   *   If the rest of the whole iteration process needs to be skipped.
    */
   public function onEach(): void;
 
   /**
    * Executes code after performing a search in each element.
+   *
+   * @throws \Shiyan\Iterate\Exception\ContinueIteration
+   *   If the rest of the current iteration step needs to be skipped.
+   * @throws \Shiyan\Iterate\Exception\BreakIteration
+   *   If the rest of the whole iteration process needs to be skipped.
    */
   public function postSearch(): void;
 

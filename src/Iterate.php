@@ -2,6 +2,8 @@
 
 namespace Shiyan\Iterate;
 
+use Shiyan\Iterate\Exception\BreakIteration;
+use Shiyan\Iterate\Exception\ContinueIteration;
 use Shiyan\Iterate\Scenario\ScenarioInterface;
 
 /**
@@ -19,9 +21,17 @@ class Iterate {
     $scenario->preRun();
 
     foreach ($scenario->getIterator() as $key => $current) {
-      $scenario->preSearch();
-      $scenario->onEach();
-      $scenario->postSearch();
+      try {
+        $scenario->preSearch();
+        $scenario->onEach();
+        $scenario->postSearch();
+      }
+      catch (ContinueIteration $exception) {
+        continue;
+      }
+      catch (BreakIteration $exception) {
+        break;
+      }
     }
 
     $scenario->postRun();

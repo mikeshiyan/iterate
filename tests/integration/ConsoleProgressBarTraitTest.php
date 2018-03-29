@@ -15,12 +15,11 @@ class TestClassUsingConsoleProgressBarTrait {
   public $iterator;
   public $output;
 
-  public function __construct(Iterator $iterator) {
-    $this->iterator = $iterator;
+  public function __construct() {
     $this->output = new BufferedOutput(OutputInterface::VERBOSITY_NORMAL, TRUE);
   }
 
-  public function getIterator(): Iterator {
+  protected function getIterator(): Iterator {
     return $this->iterator;
   }
 
@@ -41,7 +40,8 @@ class TestClassUsingConsoleProgressBarTrait {
 class ConsoleProgressBarTraitTest extends TestCase {
 
   public function testProgress_WithEmptyIterator() {
-    $scenario = new TestClassUsingConsoleProgressBarTrait(new EmptyIterator());
+    $scenario = new TestClassUsingConsoleProgressBarTrait();
+    $scenario->iterator = new EmptyIterator();
 
     $scenario->preRun();
     $this->assertSame(0, $scenario->getProgress()->getMaxSteps());
@@ -52,12 +52,12 @@ class ConsoleProgressBarTraitTest extends TestCase {
   }
 
   public function testProgress_WithCountable() {
-    $iterator = new ArrayIterator(['a', 'b', 'c']);
-    $scenario = new TestClassUsingConsoleProgressBarTrait($iterator);
+    $scenario = new TestClassUsingConsoleProgressBarTrait();
+    $scenario->iterator = new ArrayIterator(['a', 'b', 'c']);
 
     // Set current to other than first, but expect the progress to show current
     // step = 0, because it was not advanced yet.
-    $iterator->seek(1);
+    $scenario->iterator->seek(1);
     $scenario->preRun();
     $this->assertSame(3, $scenario->getProgress()->getMaxSteps());
     $this->assertSame(0, $scenario->getProgress()->getProgress());
@@ -70,8 +70,8 @@ class ConsoleProgressBarTraitTest extends TestCase {
   }
 
   public function testProgress_WithSplFileObject() {
-    $iterator = new SplFileObject(__FILE__, 'rb');
-    $scenario = new TestClassUsingConsoleProgressBarTrait($iterator);
+    $scenario = new TestClassUsingConsoleProgressBarTrait();
+    $scenario->iterator = new SplFileObject(__FILE__, 'rb');
     $filesize = filesize(__FILE__);
 
     $scenario->preRun();
@@ -80,7 +80,7 @@ class ConsoleProgressBarTraitTest extends TestCase {
 
     // Read the first line from the file, so current position will be =
     // strlen("<?php\n") = 6.
-    $iterator->current();
+    $scenario->iterator->current();
     $scenario->postSearch();
     $this->assertSame(6, $scenario->getProgress()->getProgress());
 

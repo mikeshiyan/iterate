@@ -14,13 +14,16 @@ class Iterate {
   /**
    * Runs the iteration by the scenario.
    *
+   * @param \Iterator $iterator
+   *   Iterator instance.
    * @param \Shiyan\Iterate\Scenario\ScenarioInterface $scenario
    *   The scenario to iterate by.
    */
-  public function __invoke(ScenarioInterface $scenario): void {
+  public function __invoke(\Iterator $iterator, ScenarioInterface $scenario): void {
+    $scenario->setIterator($iterator);
     $scenario->preRun();
 
-    foreach ($scenario->getIterator() as $key => $current) {
+    foreach ($iterator as $key => $current) {
       try {
         $scenario->preSearch();
         $scenario->onEach();

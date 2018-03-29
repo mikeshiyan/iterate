@@ -23,9 +23,9 @@ trait ConsoleProgressBarTrait {
    * @return \Iterator
    *   An instance of object implementing Iterator.
    *
-   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::getIterator()
+   * @see \Shiyan\Iterate\Scenario\BaseScenario::getIterator()
    */
-  abstract public function getIterator(): \Iterator;
+  abstract protected function getIterator(): \Iterator;
 
   /**
    * Gets an OutputInterface instance.

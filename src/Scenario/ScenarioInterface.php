@@ -8,12 +8,15 @@ namespace Shiyan\Iterate\Scenario;
 interface ScenarioInterface {
 
   /**
-   * Gets the iterator instance.
+   * Sets the iterator instance to work with.
    *
-   * @return \Iterator
+   * @param \Iterator $iterator
    *   An instance of object implementing Iterator.
+   *
+   * @return $this
+   *   The called object.
    */
-  public function getIterator(): \Iterator;
+  public function setIterator(\Iterator $iterator): ScenarioInterface;
 
   /**
    * Executes code before iteration.

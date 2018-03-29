@@ -17,19 +17,21 @@ abstract class BaseScenario implements ScenarioInterface {
   protected $iterator;
 
   /**
-   * Constructs a base Scenario object.
-   *
-   * @param \Iterator $iterator
-   *   Iterator instance.
+   * {@inheritdoc}
    */
-  public function __construct(\Iterator $iterator) {
+  public function setIterator(\Iterator $iterator): ScenarioInterface {
     $this->iterator = $iterator;
+
+    return $this;
   }
 
   /**
-   * {@inheritdoc}
+   * Gets the iterator instance.
+   *
+   * @return \Iterator
+   *   An instance of object implementing Iterator.
    */
-  public function getIterator(): \Iterator {
+  protected function getIterator(): \Iterator {
     return $this->iterator;
   }
 

@@ -23,7 +23,7 @@ class TestClassUsingConsoleProgressBarTrait {
     return $this->iterator;
   }
 
-  protected function getOutput(): OutputInterface {
+  protected function getOutput(): ?OutputInterface {
     return $this->output;
   }
 

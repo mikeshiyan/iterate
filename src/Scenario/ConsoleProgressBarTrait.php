@@ -30,43 +30,37 @@ trait ConsoleProgressBarTrait {
   /**
    * Gets an OutputInterface instance.
    *
-   * @return \Symfony\Component\Console\Output\OutputInterface
-   *   An OutputInterface instance.
+   * @return \Symfony\Component\Console\Output\OutputInterface|null
+   *   An OutputInterface instance or NULL. If NULL is returned, then the
+   *   ProgressBar won't be instantiated.
    */
-  abstract protected function getOutput(): OutputInterface;
+  abstract protected function getOutput(): ?OutputInterface;
 
   /**
    * Starts a new progress bar output in the pre-run phase.
    *
-   * @throws \RuntimeException
-   *   If the symfony/console component is not installed.
-   *
    * @see \Shiyan\Iterate\Scenario\ScenarioInterface::preRun()
    */
   public function preRun(): void {
-    if (!class_exists(ProgressBar::class)) {
-      // @codeCoverageIgnoreStart
-      throw new \RuntimeException('The progress bar feature is only enabled in conjunction with the symfony/console component.');
-      // @codeCoverageIgnoreEnd
-    }
+    if ($output = $this->getOutput()) {
+      $max = 0;
+      $iterator = $this->getIterator();
 
-    $max = 0;
-    $iterator = $this->getIterator();
+      if ($iterator instanceof \SplFileObject) {
+        $max = $iterator->getSize();
+      }
+      elseif ($iterator instanceof \Countable) {
+        $max = count($iterator);
+      }
 
-    if ($iterator instanceof \SplFileObject) {
-      $max = $iterator->getSize();
+      $this->progress = new ProgressBar($output, $max);
+      if ($output->isDecorated()) {
+        // If output is not decorated, the redraw frequency would automatically
+        // be set to $max/10 by default.
+        $this->progress->setRedrawFrequency($max / 100);
+      }
+      $this->progress->start();
     }
-    elseif ($iterator instanceof \Countable) {
-      $max = count($iterator);
-    }
-
-    $this->progress = new ProgressBar($this->getOutput(), $max);
-    if ($this->getOutput()->isDecorated()) {
-      // If output is not decorated, the redraw frequency would automatically be
-      // set to $max/10 by default.
-      $this->progress->setRedrawFrequency($max / 100);
-    }
-    $this->progress->start();
   }
 
   /**

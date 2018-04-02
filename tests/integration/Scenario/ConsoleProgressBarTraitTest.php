@@ -1,47 +1,14 @@
 <?php
 
+namespace Shiyan\Iterate\tests\integration\Scenario;
+
 use PHPUnit\Framework\TestCase;
-use Shiyan\Iterate\Scenario\ConsoleProgressBarTrait;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestClassUsingConsoleProgressBarTrait {
-
-  use ConsoleProgressBarTrait {
-    outputInProgress as progressOutputInProgress;
-  }
-
-  public $iterator;
-  public $output;
-
-  public function __construct() {
-    $this->output = new BufferedOutput(OutputInterface::VERBOSITY_NORMAL, TRUE);
-  }
-
-  protected function getIterator(): Iterator {
-    return $this->iterator;
-  }
-
-  protected function getOutput(): ?OutputInterface {
-    return $this->output;
-  }
-
-  public function getProgress(): ProgressBar {
-    return $this->progress;
-  }
-
-  public function outputInProgress(string $line): void {
-    $this->progressOutputInProgress($line);
-  }
-
-}
 
 class ConsoleProgressBarTraitTest extends TestCase {
 
   public function testProgress_WithEmptyIterator() {
-    $scenario = new TestClassUsingConsoleProgressBarTrait();
-    $scenario->iterator = new EmptyIterator();
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $scenario->iterator = new \EmptyIterator();
 
     $scenario->preRun();
     $this->assertSame(0, $scenario->getProgress()->getMaxSteps());
@@ -52,8 +19,8 @@ class ConsoleProgressBarTraitTest extends TestCase {
   }
 
   public function testProgress_WithCountable() {
-    $scenario = new TestClassUsingConsoleProgressBarTrait();
-    $scenario->iterator = new ArrayIterator(['a', 'b', 'c']);
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $scenario->iterator = new \ArrayIterator(['a', 'b', 'c']);
 
     // Set current to other than first, but expect the progress to show current
     // step = 0, because it was not advanced yet.
@@ -70,8 +37,8 @@ class ConsoleProgressBarTraitTest extends TestCase {
   }
 
   public function testProgress_WithSplFileObject() {
-    $scenario = new TestClassUsingConsoleProgressBarTrait();
-    $scenario->iterator = new SplFileObject(__FILE__, 'rb');
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $scenario->iterator = new \SplFileObject(__FILE__, 'rb');
     $filesize = filesize(__FILE__);
 
     $scenario->preRun();

@@ -1,5 +1,7 @@
 <?php
 
+namespace Shiyan\Iterate\tests\unit\Scenario;
+
 use PHPUnit\Framework\TestCase;
 use Shiyan\Iterate\Exception\PregLastError;
 use Shiyan\Iterate\Scenario\BaseRegexScenario;
@@ -8,7 +10,7 @@ class BaseRegexScenarioTest extends TestCase {
 
   public function testOnEach() {
     // Set current to other than first. The second of 3 patterns must match.
-    $iterator = new ArrayIterator(['a', 'b', 'c']);
+    $iterator = new \ArrayIterator(['a', 'b', 'c']);
     $iterator->seek(1);
 
     /** @var \Shiyan\Iterate\Scenario\BaseRegexScenario|\PHPUnit\Framework\MockObject\MockObject $scenario */
@@ -50,7 +52,7 @@ class BaseRegexScenarioTest extends TestCase {
     /** @var \Shiyan\Iterate\Scenario\BaseRegexScenario $scenario */
     $scenario = $this->getMockForAbstractClass(BaseRegexScenario::class);
 
-    $this->expectException(LogicException::class);
+    $this->expectException(\LogicException::class);
     $scenario->getPatterns();
   }
 

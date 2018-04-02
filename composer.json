@@ -25,6 +25,11 @@
         "symfony/console": "^4.0",
         "phpunit/phpunit": "^6.5"
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Shiyan\\Iterate\\tests\\": "tests/"
+        }
+    },
     "scripts": {
         "test": "vendor/bin/phpunit --coverage-text --whitelist src tests"
     }

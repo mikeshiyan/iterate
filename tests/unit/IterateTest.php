@@ -1,5 +1,7 @@
 <?php
 
+namespace Shiyan\Iterate\tests\unit;
+
 use PHPUnit\Framework\TestCase;
 use Shiyan\Iterate\Iterate;
 use Shiyan\Iterate\Scenario\BaseRegexScenario;
@@ -15,10 +17,10 @@ class IterateTest extends TestCase {
     $scenario->expects($this->once())->method('postRun');
     $scenario->expects($this->never())->method('preSearch');
 
-    $iterate(new ArrayIterator([]), $scenario);
+    $iterate(new \ArrayIterator([]), $scenario);
 
     // Set current to other than first, but expect search in all of them.
-    $iterator = new ArrayIterator(['a', 'b', 'c']);
+    $iterator = new \ArrayIterator(['a', 'b', 'c']);
     $iterator->seek(1);
 
     $scenario = $this->createMock(BaseRegexScenario::class);

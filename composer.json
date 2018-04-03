@@ -1,6 +1,6 @@
 {
     "name": "shiyan/iterator-regex",
-    "description": "Performs a regular expression match on iterator elements.",
+    "description": "Iterates iterators by a scenario.",
     "license": "MIT",
     "require": {
         "php": "^7.1"
@@ -10,7 +10,7 @@
             "Shiyan\\Iterate\\": "src/"
         }
     },
-    "keywords": ["regex", "match", "iterator", "scenario", "php", "oop"],
+    "keywords": ["iterator", "scenario", "regex", "match", "php", "oop"],
     "support": {
         "source": "https://github.com/mikeshiyan/iterator-regex",
         "issues": "https://github.com/mikeshiyan/iterator-regex/issues"

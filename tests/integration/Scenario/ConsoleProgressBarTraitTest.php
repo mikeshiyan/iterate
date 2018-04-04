@@ -55,4 +55,26 @@ class ConsoleProgressBarTraitTest extends TestCase {
     $this->assertSame($filesize, $scenario->getProgress()->getProgress());
   }
 
+  public function testProgress_WithNonIntIteratorKeys() {
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $scenario->iterator = new class(['a', 'b', 'c']) extends \ArrayIterator {
+      public function key() {
+        return [parent::key()];
+      }
+    };
+
+    // Set current to other than first.
+    $scenario->iterator->seek(1);
+    $scenario->preRun();
+    $this->assertSame(3, $scenario->getProgress()->getMaxSteps());
+    $this->assertSame(0, $scenario->getProgress()->getProgress());
+
+    // Expect the progress to show current step = 1 anyway.
+    $scenario->postSearch();
+    $this->assertSame(1, $scenario->getProgress()->getProgress());
+
+    $scenario->postRun();
+    $this->assertSame(3, $scenario->getProgress()->getProgress());
+  }
+
 }

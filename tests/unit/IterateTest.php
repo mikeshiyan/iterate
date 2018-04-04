@@ -3,8 +3,11 @@
 namespace Shiyan\Iterate\tests\unit;
 
 use PHPUnit\Framework\TestCase;
+use Shiyan\Iterate\Exception\BreakIteration;
+use Shiyan\Iterate\Exception\ContinueIteration;
 use Shiyan\Iterate\Iterate;
 use Shiyan\Iterate\Scenario\BaseRegexScenario;
+use Shiyan\Iterate\Scenario\BaseScenario;
 
 class IterateTest extends TestCase {
 
@@ -28,6 +31,24 @@ class IterateTest extends TestCase {
     $scenario->expects($this->once())->method('postRun');
     $scenario->expects($this->exactly(3))->method('preSearch');
     $scenario->expects($this->exactly(3))->method('postSearch');
+
+    $iterate($iterator, $scenario);
+
+    // Scenario throws Continue.
+    $scenario = $this->createMock(BaseScenario::class);
+    $scenario->method('onEach')
+      ->willThrowException(new ContinueIteration());
+    $scenario->expects($this->exactly(3))->method('preSearch');
+    $scenario->expects($this->never())->method('postSearch');
+
+    $iterate($iterator, $scenario);
+
+    // Scenario throws Break.
+    $scenario = $this->createMock(BaseScenario::class);
+    $scenario->method('onEach')
+      ->willThrowException(new BreakIteration());
+    $scenario->expects($this->exactly(1))->method('preSearch');
+    $scenario->expects($this->never())->method('postSearch');
 
     $iterate($iterator, $scenario);
   }

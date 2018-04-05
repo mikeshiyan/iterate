@@ -7,6 +7,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Defines a basic ProgressBar feature for Iterate Scenarios.
+ *
+ * Implementations need to set an instance of OutputInterface via the
+ * setOutput() method in order to use the feature.
  */
 trait ConsoleProgressBarTrait {
 
@@ -16,6 +19,13 @@ trait ConsoleProgressBarTrait {
    * @var \Symfony\Component\Console\Helper\ProgressBar
    */
   protected $progress;
+
+  /**
+   * OutputInterface instance.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
 
   /**
    * Gets the iterator to get its size and current position.
@@ -28,13 +38,30 @@ trait ConsoleProgressBarTrait {
   abstract protected function getIterator(): \Iterator;
 
   /**
+   * Sets OutputInterface instance.
+   *
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   An instance of object implementing OutputInterface.
+   *
+   * @return $this|\Shiyan\Iterate\Scenario\ScenarioInterface
+   *   The called object.
+   */
+  public function setOutput(OutputInterface $output): ScenarioInterface {
+    $this->output = $output;
+
+    return $this;
+  }
+
+  /**
    * Gets an OutputInterface instance.
    *
    * @return \Symfony\Component\Console\Output\OutputInterface|null
    *   An OutputInterface instance or NULL. If NULL is returned, then the
    *   ProgressBar won't be instantiated.
    */
-  abstract protected function getOutput(): ?OutputInterface;
+  protected function getOutput(): ?OutputInterface {
+    return $this->output;
+  }
 
   /**
    * Starts a new progress bar output in the pre-run phase.

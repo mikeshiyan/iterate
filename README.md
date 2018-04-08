@@ -1,6 +1,6 @@
 # Iterate
 
-[![Build Status](https://travis-ci.org/mikeshiyan/iterator-regex.svg?branch=master)](https://travis-ci.org/mikeshiyan/iterator-regex)
+[![Build Status](https://travis-ci.org/mikeshiyan/iterate.svg?branch=master)](https://travis-ci.org/mikeshiyan/iterate)
 
 PHP classes and interfaces to iterate `\Iterator`s by a scenario or to perform a
 regular expression match on iterator elements by a scenario.
@@ -32,7 +32,7 @@ Best suited for use as a [Composer](https://getcomposer.org) library.
 
 To add this library to your Composer project:
 ```
-composer require shiyan/iterator-regex
+composer require shiyan/iterate
 ```
 
 ## Usage
@@ -98,7 +98,7 @@ $iterator = new ArrayIterator($array);
 $scenario = new ExampleScenario();
 $iterate = new Iterate();
 
-// Invoke iterator-regex with our scenario.
+// Invoke iterate with our scenario.
 $iterate($iterator, $scenario);
 print "Found {$scenario->counter} non-empty, non-PHP strings.\n";
 

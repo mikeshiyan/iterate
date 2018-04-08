@@ -1,59 +1,27 @@
 <?php
 
+namespace Shiyan\Iterate\tests\integration\Scenario;
+
 use PHPUnit\Framework\TestCase;
-use Shiyan\IteratorRegex\Scenario\ConsoleProgressBarTrait;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestClassUsingConsoleProgressBarTrait {
-
-  use ConsoleProgressBarTrait {
-    outputInProgress as progressOutputInProgress;
-  }
-
-  public $iterator;
-  public $output;
-
-  public function __construct(Iterator $iterator) {
-    $this->iterator = $iterator;
-    $this->output = new BufferedOutput(OutputInterface::VERBOSITY_NORMAL, TRUE);
-  }
-
-  public function getIterator(): Iterator {
-    return $this->iterator;
-  }
-
-  protected function getOutput(): OutputInterface {
-    return $this->output;
-  }
-
-  public function getProgress(): ProgressBar {
-    return $this->progress;
-  }
-
-  public function outputInProgress(string $line): void {
-    $this->progressOutputInProgress($line);
-  }
-
-}
 
 class ConsoleProgressBarTraitTest extends TestCase {
 
   public function testProgress_WithEmptyIterator() {
-    $scenario = new TestClassUsingConsoleProgressBarTrait(new EmptyIterator());
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $scenario->setIterator(new \EmptyIterator());
 
     $scenario->preRun();
     $this->assertSame(0, $scenario->getProgress()->getMaxSteps());
     $this->assertSame(0, $scenario->getProgress()->getProgress());
 
     $scenario->outputInProgress('Abc.');
-    $this->assertContains("Abc.\n", $scenario->output->fetch());
+    $this->assertContains("Abc.\n", $scenario->getOutput()->fetch());
   }
 
   public function testProgress_WithCountable() {
-    $iterator = new ArrayIterator(['a', 'b', 'c']);
-    $scenario = new TestClassUsingConsoleProgressBarTrait($iterator);
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $iterator = new \ArrayIterator(['a', 'b', 'c']);
+    $scenario->setIterator($iterator);
 
     // Set current to other than first, but expect the progress to show current
     // step = 0, because it was not advanced yet.
@@ -70,8 +38,9 @@ class ConsoleProgressBarTraitTest extends TestCase {
   }
 
   public function testProgress_WithSplFileObject() {
-    $iterator = new SplFileObject(__FILE__, 'rb');
-    $scenario = new TestClassUsingConsoleProgressBarTrait($iterator);
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $iterator = new \SplFileObject(__FILE__, 'rb');
+    $scenario->setIterator($iterator);
     $filesize = filesize(__FILE__);
 
     $scenario->preRun();
@@ -86,6 +55,29 @@ class ConsoleProgressBarTraitTest extends TestCase {
 
     $scenario->postRun();
     $this->assertSame($filesize, $scenario->getProgress()->getProgress());
+  }
+
+  public function testProgress_WithNonIntIteratorKeys() {
+    $scenario = new ClassUsingConsoleProgressBarTrait();
+    $iterator = new class(['a', 'b', 'c']) extends \ArrayIterator {
+      public function key() {
+        return [parent::key()];
+      }
+    };
+    $scenario->setIterator($iterator);
+
+    // Set current to other than first.
+    $iterator->seek(1);
+    $scenario->preRun();
+    $this->assertSame(3, $scenario->getProgress()->getMaxSteps());
+    $this->assertSame(0, $scenario->getProgress()->getProgress());
+
+    // Expect the progress to show current step = 1 anyway.
+    $scenario->postSearch();
+    $this->assertSame(1, $scenario->getProgress()->getProgress());
+
+    $scenario->postRun();
+    $this->assertSame(3, $scenario->getProgress()->getProgress());
   }
 
 }

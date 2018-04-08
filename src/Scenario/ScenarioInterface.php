@@ -1,28 +1,22 @@
 <?php
 
-namespace Shiyan\IteratorRegex\Scenario;
+namespace Shiyan\Iterate\Scenario;
 
 /**
- * Provides interface for IteratorRegex Scenarios.
+ * Provides interface for Iterate Scenarios.
  */
 interface ScenarioInterface {
 
   /**
-   * Gets the iterator to perform a regular expression match in.
+   * Sets the iterator instance to work with.
    *
-   * @return \Iterator
+   * @param \Iterator $iterator
    *   An instance of object implementing Iterator.
-   */
-  public function getIterator(): \Iterator;
-
-  /**
-   * Gets patterns to search for in each Iterator's element.
    *
-   * @return string[]
-   *   Array of patterns. Order matters - if any pattern is found in an element,
-   *   following patterns are not searched for in that element.
+   * @return $this
+   *   The called object.
    */
-  public function getPatterns(): array;
+  public function setIterator(\Iterator $iterator): ScenarioInterface;
 
   /**
    * Executes code before iteration.
@@ -31,30 +25,31 @@ interface ScenarioInterface {
 
   /**
    * Executes code before performing a search in each element.
+   *
+   * @throws \Shiyan\Iterate\Exception\ContinueIteration
+   *   If the rest of the current iteration step needs to be skipped.
+   * @throws \Shiyan\Iterate\Exception\BreakIteration
+   *   If the rest of the whole iteration process needs to be skipped.
    */
   public function preSearch(): void;
 
   /**
-   * Executes code if $pattern matches an element.
+   * Executes code for each element.
    *
-   * @param array $matches
-   *   Array with the results of search. $matches[0] contains the text that
-   *   matches the full pattern, $matches[1] has the text that matches the first
-   *   captured parenthesized subpattern, and so on.
-   * @param string $pattern
-   *   The pattern that matches an element.
-   *
-   * @see preg_match()
+   * @throws \Shiyan\Iterate\Exception\ContinueIteration
+   *   If the rest of the current iteration step needs to be skipped.
+   * @throws \Shiyan\Iterate\Exception\BreakIteration
+   *   If the rest of the whole iteration process needs to be skipped.
    */
-  public function onMatch(array $matches, string $pattern): void;
+  public function onEach(): void;
 
   /**
-   * Executes code if no patterns match an element.
-   */
-  public function ifNotMatched(): void;
-
-  /**
-   * Executes code regardless of search success in each element.
+   * Executes code after performing a search in each element.
+   *
+   * @throws \Shiyan\Iterate\Exception\ContinueIteration
+   *   If the rest of the current iteration step needs to be skipped.
+   * @throws \Shiyan\Iterate\Exception\BreakIteration
+   *   If the rest of the whole iteration process needs to be skipped.
    */
   public function postSearch(): void;
 

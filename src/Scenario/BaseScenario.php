@@ -1,60 +1,38 @@
 <?php
 
-namespace Shiyan\IteratorRegex\Scenario;
+namespace Shiyan\Iterate\Scenario;
 
 /**
- * Defines a base Scenario to run IteratorRegex by.
+ * Defines a base Scenario to iterate by.
  *
- * Implementation classes need to implement at least the onMatch() and either
- * of getPattern()/getPatterns() methods.
+ * Implementation classes need to implement at least the onEach() method.
  */
 abstract class BaseScenario implements ScenarioInterface {
 
   /**
-   * Iterator to perform a regular expression match in.
+   * Iterator instance.
    *
    * @var \Iterator
    */
   protected $iterator;
 
   /**
-   * Constructs a base Scenario object.
-   *
-   * @param \Iterator $iterator
-   *   Iterator to perform a regular expression match in.
+   * {@inheritdoc}
    */
-  public function __construct(\Iterator $iterator) {
+  public function setIterator(\Iterator $iterator): ScenarioInterface {
     $this->iterator = $iterator;
+
+    return $this;
   }
 
   /**
-   * {@inheritdoc}
+   * Gets the iterator instance.
+   *
+   * @return \Iterator
+   *   An instance of object implementing Iterator.
    */
-  public function getIterator(): \Iterator {
+  protected function getIterator(): \Iterator {
     return $this->iterator;
-  }
-
-  /**
-   * Gets the only pattern to search for.
-   *
-   * This method can be implemented instead of the getPatterns() if only
-   * a single pattern needs to be searched for.
-   *
-   * @return string
-   *   Regular expression pattern.
-   *
-   * @throws \LogicException
-   *   If neither this nor getPatterns() method is implemented.
-   */
-  protected function getPattern(): string {
-    throw new \LogicException('You must override either of getPattern()/getPatterns() methods in the concrete scenario class.');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPatterns(): array {
-    return [$this->getPattern()];
   }
 
   /**
@@ -66,11 +44,6 @@ abstract class BaseScenario implements ScenarioInterface {
    * {@inheritdoc}
    */
   public function preSearch(): void {}
-
-  /**
-   * {@inheritdoc}
-   */
-  public function ifNotMatched(): void {}
 
   /**
    * {@inheritdoc}

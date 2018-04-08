@@ -1,19 +1,19 @@
 {
-    "name": "shiyan/iterator-regex",
-    "description": "Performs a regular expression match on iterator elements.",
+    "name": "shiyan/iterate",
+    "description": "Iterates iterators by a scenario.",
     "license": "MIT",
     "require": {
         "php": "^7.1"
     },
     "autoload": {
         "psr-4": {
-            "Shiyan\\IteratorRegex\\": "src/"
+            "Shiyan\\Iterate\\": "src/"
         }
     },
-    "keywords": ["regex", "match", "iterator", "scenario", "php", "oop"],
+    "keywords": ["iterator", "scenario", "regex", "match", "php", "oop"],
     "support": {
-        "source": "https://github.com/mikeshiyan/iterator-regex",
-        "issues": "https://github.com/mikeshiyan/iterator-regex/issues"
+        "source": "https://github.com/mikeshiyan/iterate",
+        "issues": "https://github.com/mikeshiyan/iterate/issues"
     },
     "authors": [
         {
@@ -24,6 +24,11 @@
     "require-dev": {
         "symfony/console": "^4.0",
         "phpunit/phpunit": "^6.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shiyan\\Iterate\\tests\\": "tests/"
+        }
     },
     "scripts": {
         "test": "vendor/bin/phpunit --coverage-text --whitelist src tests"

@@ -1,20 +1,26 @@
-# Iterator Regex
+# Iterate
 
-[![Build Status](https://travis-ci.org/mikeshiyan/iterator-regex.svg?branch=master)](https://travis-ci.org/mikeshiyan/iterator-regex)
+[![Build Status](https://travis-ci.org/mikeshiyan/iterate.svg?branch=master)](https://travis-ci.org/mikeshiyan/iterate)
 
-PHP classes and interfaces to perform a regular expression match on iterator
-elements by the scenario.
+PHP classes and interfaces to iterate `\Iterator`s by a scenario or to perform a
+regular expression match on iterator elements by a scenario.
 
-Scenario is an object that implements the `ScenarioInterface` or extends the
-`BaseScenario` abstract class. It stores an iterator instance and has methods
-describing logic that needs to be executed in certain moments while regex
-matching is performed, - for example, when some pattern matched a subject, or
-none matched, or before/after performing a search, etc.
+A Scenario is a class that implements the `ScenarioInterface` or extends either
+`BaseScenario` or `BaseRegexScenario` abstract class. It receives an `Iterator`
+instance and executes the logic in certain moments of the iteration process -
+for example, while regex matching is performed - when some pattern matched a
+subject, or none matched, or before/after performing a search, etc.
 
-Iterator is any object implementing `Iterator` interface.
+Think of it as of [`array_walk()`](http://php.net/manual/function.array-walk.php)
+for iterators or [`iterator_apply()`](http://php.net/manual/function.iterator-apply.php),
+but instead of a single callback you provide an object (Scenario) with several
+methods. And you can use these Scenarios as plugins.
 
-The main class, which performs matching, is `IteratorRegex`. It just needs to be
-instantiated and invoked with a scenario instance.
+Iterator is simply any object implementing the [`\Iterator`](http://php.net/manual/class.iterator.php)
+interface.
+
+The main class, which runs the process, is `Iterate`. It just needs to be
+instantiated and invoked with an iterator and a scenario objects.
 
 Best suited for use as a [Composer](https://getcomposer.org) library.
 
@@ -26,20 +32,30 @@ Best suited for use as a [Composer](https://getcomposer.org) library.
 
 To add this library to your Composer project:
 ```
-composer require shiyan/iterator-regex
+composer require shiyan/iterate
 ```
 
 ## Usage
 
-Example. Assuming there is an array of strings, `$array`. Iterate over it,
+There are 2 base scenarios included:
+* The very basic one to execute some logic on each element of the iterator
+unconditionally.
+* And the regex based one, which performs a regular expression match (using one
+or more patterns) on iterator elements (casted to strings), and allows to
+execute different logic depending on what pattern matched or if no patterns
+matched.
+
+### Example
+
+Assuming there is an array of strings, `$array`. Iterate over it,
 convert all empty strings to 0 (zero), print all strings containing "PHP" and
 simply count all other elements.
 
 First, create a scenario class:
 ```
-use Shiyan\IteratorRegex\Scenario\BaseScenario;
+use Shiyan\Iterate\Scenario\BaseRegexScenario;
 
-class ExampleScenario extends BaseScenario {
+class ExampleScenario extends BaseRegexScenario {
 
   const PATTERN_EMPTY = '/^$/';
   const PATTERN_PHP = '/PHP/';
@@ -75,24 +91,23 @@ class ExampleScenario extends BaseScenario {
 
 And then:
 ```
-use Shiyan\IteratorRegex\IteratorRegex;
+use Shiyan\Iterate\Iterate;
 
-// Convert our array of strings to the iterator object, and supply it to our
-// scenario object.
+// Convert our array of strings to the iterator object.
 $iterator = new ArrayIterator($array);
-$scenario = new ExampleScenario($iterator);
-$iterator_regex = new IteratorRegex();
+$scenario = new ExampleScenario();
+$iterate = new Iterate();
 
-// Invoke iterator-regex with our scenario.
-$iterator_regex($scenario);
+// Invoke iterate with our scenario.
+$iterate($iterator, $scenario);
 print "Found {$scenario->counter} non-empty, non-PHP strings.\n";
 
 // Let's check that empty strings were converted to zeros.
-print_r($scenario->getIterator()->getArrayCopy());
+print_r($iterator->getArrayCopy());
 
-// If we invoke iterator-regex with the same scenario once again, it won't find
-// empty strings anymore. Instead, we'll have a higher number in the $counter
-// property of the $scenario object.
-$iterator_regex($scenario);
+// If we invoke Iterate with the same scenario once again, it won't find empty
+// strings anymore. Instead, we'll have a higher number in the $counter property
+// of the $scenario object, because the "0" doesn't match our patterns.
+$iterate($iterator, $scenario);
 print "Found {$scenario->counter} non-empty, non-PHP strings.\n";
 ```

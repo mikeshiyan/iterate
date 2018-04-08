@@ -1,12 +1,15 @@
 <?php
 
-namespace Shiyan\IteratorRegex\Scenario;
+namespace Shiyan\Iterate\Scenario;
 
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Defines a basic ProgressBar feature for IteratorRegex Scenarios.
+ * Defines a basic ProgressBar feature for Iterate Scenarios.
+ *
+ * Implementations need to set an instance of OutputInterface via the
+ * setOutput() method in order to use the feature.
  */
 trait ConsoleProgressBarTrait {
 
@@ -18,61 +21,79 @@ trait ConsoleProgressBarTrait {
   protected $progress;
 
   /**
+   * OutputInterface instance.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
    * Gets the iterator to get its size and current position.
    *
    * @return \Iterator
    *   An instance of object implementing Iterator.
    *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::getIterator()
+   * @see \Shiyan\Iterate\Scenario\BaseScenario::getIterator()
    */
-  abstract public function getIterator(): \Iterator;
+  abstract protected function getIterator(): \Iterator;
+
+  /**
+   * Sets OutputInterface instance.
+   *
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   An instance of object implementing OutputInterface.
+   *
+   * @return $this|\Shiyan\Iterate\Scenario\ScenarioInterface
+   *   The called object.
+   */
+  public function setOutput(OutputInterface $output): ScenarioInterface {
+    $this->output = $output;
+
+    return $this;
+  }
 
   /**
    * Gets an OutputInterface instance.
    *
-   * @return \Symfony\Component\Console\Output\OutputInterface
-   *   An OutputInterface instance.
+   * @return \Symfony\Component\Console\Output\OutputInterface|null
+   *   An OutputInterface instance or NULL. If NULL is returned, then the
+   *   ProgressBar won't be instantiated.
    */
-  abstract protected function getOutput(): OutputInterface;
+  protected function getOutput(): ?OutputInterface {
+    return $this->output;
+  }
 
   /**
    * Starts a new progress bar output in the pre-run phase.
    *
-   * @throws \RuntimeException
-   *   If the symfony/console component is not installed.
-   *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::preRun()
+   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::preRun()
    */
   public function preRun(): void {
-    if (!class_exists(ProgressBar::class)) {
-      // @codeCoverageIgnoreStart
-      throw new \RuntimeException('The progress bar feature is only enabled in conjunction with the symfony/console component.');
-      // @codeCoverageIgnoreEnd
-    }
+    if ($output = $this->getOutput()) {
+      $max = 0;
+      $iterator = $this->getIterator();
 
-    $max = 0;
-    $iterator = $this->getIterator();
+      if ($iterator instanceof \SplFileObject) {
+        $max = $iterator->getSize();
+      }
+      elseif ($iterator instanceof \Countable) {
+        $max = count($iterator);
+      }
 
-    if ($iterator instanceof \SplFileObject) {
-      $max = $iterator->getSize();
+      $this->progress = new ProgressBar($output, $max);
+      if ($output->isDecorated()) {
+        // If output is not decorated, the redraw frequency would automatically
+        // be set to $max/10 by default.
+        $this->progress->setRedrawFrequency($max / 100);
+      }
+      $this->progress->start();
     }
-    elseif ($iterator instanceof \Countable) {
-      $max = count($iterator);
-    }
-
-    $this->progress = new ProgressBar($this->getOutput(), $max);
-    if ($this->getOutput()->isDecorated()) {
-      // If output is not decorated, the redraw frequency would automatically be
-      // set to $max/10 by default.
-      $this->progress->setRedrawFrequency($max / 100);
-    }
-    $this->progress->start();
   }
 
   /**
    * Updates the current progress in the post-search phase.
    *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::postSearch()
+   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::postSearch()
    */
   public function postSearch(): void {
     if ($this->progress) {
@@ -96,7 +117,7 @@ trait ConsoleProgressBarTrait {
   /**
    * Finishes the progress output in the post-run phase.
    *
-   * @see \Shiyan\IteratorRegex\Scenario\ScenarioInterface::postRun()
+   * @see \Shiyan\Iterate\Scenario\ScenarioInterface::postRun()
    */
   public function postRun(): void {
     if ($this->progress) {
